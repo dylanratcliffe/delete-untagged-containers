@@ -55,16 +55,15 @@ const run = async () => {
     console.log(JSON.stringify(versions));
 
     // Filter to only untagged containers
-    versions.filter((version) => {
-      console.log(`Checking tags: ${JSON.stringify(version.metadata.container.tags)}`)
+    var untagged_versions = versions.filter((version) => {
       version.metadata.container.tags.length == 0
     })
 
-    console.log(`Found ${versions.length} versions that were untagged`);
+    console.log(`Found ${untagged_versions.length} versions that were untagged`);
 
     deletion_promises = []
 
-    for (const version of versions) {
+    for (const version of untagged_versions) {
       console.log(`Deleting untagged version: ${version.name}`)
 
       if (type == "user") {
