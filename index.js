@@ -53,9 +53,7 @@ const run = async () => {
     versions = versionsResponse.data
 
     // Filter to only untagged containers
-    var untagged_versions = versions.filter((version) => {
-      version.metadata.container.tags.length == 0
-    })
+    var untagged_versions = versions.filter(version => version.metadata.container.tags.length == 0)
 
     console.log(`Found ${untagged_versions.length} versions that were untagged`);
 
