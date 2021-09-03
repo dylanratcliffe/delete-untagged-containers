@@ -52,6 +52,8 @@ const run = async () => {
 
     versions = versionsResponse.data
 
+    console.log(versions)
+
     // Filter to only untagged contains
     versions.filter((version) => {
       version.metadata.container.tags.length == 0
