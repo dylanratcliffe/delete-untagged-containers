@@ -48,40 +48,45 @@ const run = async () => {
       package_name: packageName,
       name: org_user,
       type: type
-    })
+    });
 
     versions = versionsResponse.data
 
+    // Filter to only untagged contains
+    versions.filter((version) => {
+      version.metadata.container.tags.length == 0
+    })
+
+    console.log(`Found ${versions.length} versions that were untagged`);
+
+    deletion_promises = []
+
     for (const version of versions) {
-      if (version.metadata.container.tags.length == 0) {
-        console.log(`Deleting untagged version: ${version.name}`)
+      console.log(`Deleting untagged version: ${version.name}`)
 
-        if (type == "user") {
-          status = await octokit.request('DELETE /user/packages/{package_type}/{package_name}/versions/{package_version_id}', {
-            package_type: 'container',
-            package_name: packageName,
-            package_version_id: version.id
-          })
-        } else {
-          status = await octokit.request('DELETE /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}', {
-            package_type: 'container',
-            package_name: packageName,
-            org: org_user,
-            package_version_id: version.id
-          })
-        }
-
-        console.log(`Status: ${status.status}`)
+      if (type == "user") {
+        deletion_promises.push(octokit.request('DELETE /user/packages/{package_type}/{package_name}/versions/{package_version_id}', {
+          package_type: 'container',
+          package_name: packageName,
+          package_version_id: version.id
+        }).then((status) => {
+          console.log(`Status: ${status.status}`);
+        }));
+      } else {
+        deletion_promises.push(octokit.request('DELETE /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}', {
+          package_type: 'container',
+          package_name: packageName,
+          org: org_user,
+          package_version_id: version.id
+        }).then((status) => {
+          console.log(`Status: ${status.status}`);
+        }));
       }
     }
 
-    // versions = await octokit.request('GET /user/packages/{package_type}/{package_name}/versions', {
-    //   package_type: 'package_type',
-    //   package_name: 'package_name'
-    // })
+    await Promise.all(deletion_promises)
 
-    // core.setOutput("pkg", pkg);
-
+    console.log("Done")
     
   } catch (error) {
     core.setFailed(error.message);
