@@ -52,9 +52,9 @@ const run = async () => {
 
     versions = versionsResponse.data
 
-    console.log(versions)
+    console.log(JSON.stringify(versions));
 
-    // Filter to only untagged contains
+    // Filter to only untagged containers
     versions.filter((version) => {
       version.metadata.container.tags.length == 0
     })
