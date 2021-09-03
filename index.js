@@ -56,6 +56,7 @@ const run = async () => {
 
     // Filter to only untagged containers
     versions.filter((version) => {
+      console.log(`Checking tags: ${JSON.stringify(version.metadata.container.tags)}`)
       version.metadata.container.tags.length == 0
     })
 
