@@ -71,6 +71,9 @@ const run = async () => {
       versions.concat(versionsResponse.data);
     } while (current_page != last_page);
 
+    console.log(`Versions: ${versions.length}`)
+    console.log(JSON.stringify(versions));
+
     // Filter to only untagged containers
     var untagged_versions = versions.filter(version => version.metadata.container.tags.length == 0)
 
