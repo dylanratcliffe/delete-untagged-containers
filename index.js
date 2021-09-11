@@ -41,6 +41,12 @@ const run = async () => {
     })
 
     console.log(`Found package id: ${pkg.data.id}`)
+
+    // Note that the API will paginate responses and the documentation on
+    // exactly how it does this is extremely unclear.
+    // TODO: Need to work out how to get all of the pages
+
+
     console.log(`Getting ${pkg.data.version_count} package versions`);
 
     versionsResponse = await octokit.request('GET /{type}s/{name}/packages/{package_type}/{package_name}/versions', {
@@ -50,41 +56,44 @@ const run = async () => {
       type: type
     });
 
-    versions = versionsResponse.data
+    console.log(`API Response: ${JSON.stringify(versionsResponse)}`)
 
-    // Filter to only untagged containers
-    var untagged_versions = versions.filter(version => version.metadata.container.tags.length == 0)
 
-    console.log(`Found ${untagged_versions.length} versions that were untagged`);
+    // versions = versionsResponse.data
 
-    deletion_promises = []
+    // // Filter to only untagged containers
+    // var untagged_versions = versions.filter(version => version.metadata.container.tags.length == 0)
 
-    for (const version of untagged_versions) {
-      console.log(`Deleting untagged version: ${version.name}`)
+    // console.log(`Found ${untagged_versions.length} versions that were untagged`);
 
-      if (type == "user") {
-        deletion_promises.push(octokit.request('DELETE /user/packages/{package_type}/{package_name}/versions/{package_version_id}', {
-          package_type: 'container',
-          package_name: packageName,
-          package_version_id: version.id
-        }).then((status) => {
-          console.log(`Status: ${status.status}`);
-        }));
-      } else {
-        deletion_promises.push(octokit.request('DELETE /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}', {
-          package_type: 'container',
-          package_name: packageName,
-          org: org_user,
-          package_version_id: version.id
-        }).then((status) => {
-          console.log(`Status: ${status.status}`);
-        }));
-      }
-    }
+    // deletion_promises = []
 
-    await Promise.all(deletion_promises)
+    // for (const version of untagged_versions) {
+    //   console.log(`Deleting untagged version: ${version.name}`)
 
-    console.log("Done")
+    //   if (type == "user") {
+    //     deletion_promises.push(octokit.request('DELETE /user/packages/{package_type}/{package_name}/versions/{package_version_id}', {
+    //       package_type: 'container',
+    //       package_name: packageName,
+    //       package_version_id: version.id
+    //     }).then((status) => {
+    //       console.log(`Status: ${status.status}`);
+    //     }));
+    //   } else {
+    //     deletion_promises.push(octokit.request('DELETE /orgs/{org}/packages/{package_type}/{package_name}/versions/{package_version_id}', {
+    //       package_type: 'container',
+    //       package_name: packageName,
+    //       org: org_user,
+    //       package_version_id: version.id
+    //     }).then((status) => {
+    //       console.log(`Status: ${status.status}`);
+    //     }));
+    //   }
+    // }
+
+    // await Promise.all(deletion_promises)
+
+    // console.log("Done")
     
   } catch (error) {
     core.setFailed(error.message);
