@@ -68,7 +68,7 @@ const run = async () => {
       }
   
       // Add the versions to our list
-      versions.concat(versionsResponse.data);
+      versions = versions.concat(versionsResponse.data);
     } while (current_page != last_page);
 
     console.log(`Versions: ${versions.length}`)
