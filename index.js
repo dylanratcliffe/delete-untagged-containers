@@ -49,7 +49,7 @@ const run = async () => {
     var versions = [];
 
     do {
-      console.log(`Getting ${pkg.data.version_count} package versions`);
+      console.log(`Getting package versions page ${current_page}`);
 
       versionsResponse = await octokit.request('GET /{type}s/{name}/packages/{package_type}/{package_name}/versions', {
         package_type: 'container',
@@ -57,7 +57,7 @@ const run = async () => {
         name: org_user,
         type: type,
         page: current_page,
-        per_page: 100
+        per_page: 10
       });
   
       if (typeof versionsResponse.headers.link == 'string') {
