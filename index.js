@@ -42,29 +42,39 @@ const run = async () => {
 
     console.log(`Found package id: ${pkg.data.id}`)
 
-    // Note that the API will paginate responses and the documentation on
-    // exactly how it does this is extremely unclear.
-    // TODO: Need to work out how to get all of the pages
+    // Note that the API will paginate responses so we need to make sure to
+    // traverse all pages
+    var current_page = 1;
+    var last_page = 1;
+    var versions = [];
 
+    do {
+      console.log(`Getting ${pkg.data.version_count} package versions`);
 
-    console.log(`Getting ${pkg.data.version_count} package versions`);
+      versionsResponse = await octokit.request('GET /{type}s/{name}/packages/{package_type}/{package_name}/versions', {
+        package_type: 'container',
+        package_name: packageName,
+        name: org_user,
+        type: type,
+        page: current_page,
+        per_page: 100
+      });
+  
+      if (typeof versionsResponse.headers.link == 'string') {
+        // Parse out the page info and update current page to next page 
+        match = versionsResponse.headers.link.match(/\?page=(\d+).*\?page=(\d+)/);
+        current_page = match[1]; // set to next
+        last_page = match[2];    // set to last
+      }
+  
+      // Add the versions to our list
+      versions.concat(versionsResponse.data);
+    } while (current_page != last_page);
 
-    versionsResponse = await octokit.request('GET /{type}s/{name}/packages/{package_type}/{package_name}/versions', {
-      package_type: 'container',
-      package_name: packageName,
-      name: org_user,
-      type: type
-    });
+    // Filter to only untagged containers
+    var untagged_versions = versions.filter(version => version.metadata.container.tags.length == 0)
 
-    console.log(`API Response: ${JSON.stringify(versionsResponse)}`)
-
-
-    // versions = versionsResponse.data
-
-    // // Filter to only untagged containers
-    // var untagged_versions = versions.filter(version => version.metadata.container.tags.length == 0)
-
-    // console.log(`Found ${untagged_versions.length} versions that were untagged`);
+    console.log(`Found ${untagged_versions.length} versions that were untagged`);
 
     // deletion_promises = []
 
