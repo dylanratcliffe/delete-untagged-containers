@@ -5,16 +5,13 @@ inputs:
     description: 'The name of the package to delete'
     required: true
   token:
-    description: 'Access token to use for deleting packages'
-    required: true
+    description: 'Personal access token to use for deleting packages, if this is omitted it will default to using Github Actions auth'
+    required: false
   org:
     description: 'The name of the org that the containers lives under. Will default to the org of the repo that the payload trigger comes from.'
     required: false
   user:
     description: 'The name of the user that the container lives under.  Will default to the user of the repo that the payload trigger comes from.'
-    required: false
-  debug:
-    description: 'Whether to enable debug logging'
     required: false
 runs:
   using: 'node12'
