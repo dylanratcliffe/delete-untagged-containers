@@ -1,6 +1,5 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { Octokit } = require("@octokit/core");
 
 const run = async () => {
   try {
@@ -9,18 +8,14 @@ const run = async () => {
     const token = core.getInput('token');
 
     if (token == '') {
-      const actionsAuth = require('@octokit/action')
-
-      var options = {
-        authStrategy: actionsAuth,
-      }
+      const { Octokit } = require('@octokit/action');
+      const octokit = new Octokit();
     } else {
-      var options = {
+      const { Octokit } = require("@octokit/core");
+      const octokit = new Octokit({
         auth: token,
-      }
+      });
     }
-
-    const octokit = new Octokit(options);
 
     octokit.hook.error("request", async (error, options) => {
       throw error;
