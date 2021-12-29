@@ -4,17 +4,23 @@ const github = require('@actions/github');
 const run = async () => {
   try {
     const packageName = core.getInput('package_name');
-    const context = github.context;
-    const token = core.getInput('token');
+    const context     = github.context;
+    const token       = core.getInput('token');
+    const token_type  = core.getInput('token_type')
 
-    if (token == '') {
-      const { Octokit } = require('@octokit/action');
-      const octokit = new Octokit();
-    } else {
-      const { Octokit } = require("@octokit/core");
-      const octokit = new Octokit({
-        auth: token,
-      });
+    switch(token_type) {
+      case 'Actions':
+        const { Octokit } = require('@octokit/action');
+        const octokit = new Octokit();
+        break;
+      case 'PAT':
+        const { Octokit } = require("@octokit/core");
+        const octokit = new Octokit({
+          auth: token,
+        });
+        break;
+      default:
+        throw 'Invalid token_type, must be "PAT" or "Actions"';
     }
 
     octokit.hook.error("request", async (error, options) => {

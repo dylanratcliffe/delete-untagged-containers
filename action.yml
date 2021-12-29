@@ -1,12 +1,16 @@
 name: 'Delete Untagged Containers'
-description: 'Deletes untagged containers from Github conteriner registry (ghcr.io)'
+description: 'Deletes untagged containers from Github container registry (ghcr.io)'
 inputs:
   package_name:
     description: 'The name of the package to delete'
     required: true
   token:
     description: 'Personal access token to use for deleting packages, if this is omitted it will default to using Github Actions auth'
-    required: false
+    required: true
+  token_type:
+    description: 'The type of token used, valid values are "PAT" (Personal access token) or "Actions" (Github Actions)'
+    required: true
+    default: PAT
   org:
     description: 'The name of the org that the containers lives under. Will default to the org of the repo that the payload trigger comes from.'
     required: false
