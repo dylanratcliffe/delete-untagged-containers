@@ -6,13 +6,14 @@ const run = async () => {
     const packageName = core.getInput('package_name');
     const context     = github.context;
     const token       = core.getInput('token');
+    var octokit;
 
     if (token == '') {
       const { Octokit } = require('@octokit/action');
-      const octokit = new Octokit();
+      octokit = new Octokit();
     } else {
       const { Octokit } = require("@octokit/core");
-      const octokit = new Octokit({
+      octokit = new Octokit({
         auth: token,
       });
     }
