@@ -5,8 +5,8 @@ inputs:
     description: 'The name of the package to delete'
     required: true
   token:
-    description: 'Personal access token to use for deleting packages, if this is omitted it will default to using Github Actions auth'
-    required: false
+    description: 'Personal access token or GITHUB_TOKEN to use for deleting packages'
+    required: true
   org:
     description: 'The name of the org that the containers lives under. Will default to the org of the repo that the payload trigger comes from.'
     required: false

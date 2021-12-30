@@ -51,8 +51,7 @@ jobs:
         uses: dylanratcliffe/delete-untagged-containers@main
         with:
           package_name: ${{ github.event.inputs.package_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Personal Access token

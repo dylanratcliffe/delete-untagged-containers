@@ -1,22 +1,12 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const { Octokit } = require('@octokit/action');
 
 const run = async () => {
   try {
     const packageName = core.getInput('package_name');
     const context     = github.context;
     const token       = core.getInput('token');
-    var octokit;
-
-    if (token == '') {
-      octokit = new Octokit();
-    } else {
-      const { Octokit } = require("@octokit/core");
-      octokit = new Octokit({
-        auth: token,
-      });
-    }
+    const octokit     = github.getOctokit(token)
 
     octokit.hook.error("request", async (error, options) => {
       console.error("Request error. Options:")
