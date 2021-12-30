@@ -34,6 +34,8 @@ Note that this has not been fully tested with non-user orgs as the APIs differ. 
 
 It is now possible (and recommended) to use an automatic [Github Actions token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication) rather than a person access token. Which repos are allowed to access which packages can be configured in "Manage Actions access" under the settings for a given package.
 
+**NOTE:** This does not work with org-scoped packages. If you're having `Package not found` errors when using `secrets.GITHUB_TOKEN`, try using a personal access token instead. Follow [this thread](https://github.community/t/github-token-cannot-access-private-packages) for details.
+
 ```yaml
 name: Remove old package versions
 on:
