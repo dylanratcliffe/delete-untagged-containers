@@ -14,12 +14,6 @@ Note that this has not been fully tested with non-user orgs as the APIs differ. 
 
 **Required:** Access token to use for deleting packages
 
-### `token_type`
-
-**Optional:** The type of token used, valid values are "PAT" (Personal access token) or "Actions" (Github Actions).
-
-**Default:** `PAT`
-
 ### `org`
 
 **Required:** The name of the org that the package belongs to (if an organization, otherwise you can use `user` or rely on automatic detection)
