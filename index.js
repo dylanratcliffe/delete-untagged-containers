@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const { Octokit } = require('@octokit/action');
 
 const run = async () => {
   try {
@@ -9,7 +10,6 @@ const run = async () => {
     var octokit;
 
     if (token == '') {
-      const { Octokit } = require('@octokit/action');
       octokit = new Octokit();
     } else {
       const { Octokit } = require("@octokit/core");
@@ -19,6 +19,8 @@ const run = async () => {
     }
 
     octokit.hook.error("request", async (error, options) => {
+      console.error("Request error. Options:")
+      console.error(JSON.stringify(options))
       throw error;
     });
 
